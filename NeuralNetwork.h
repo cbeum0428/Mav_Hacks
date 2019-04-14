@@ -6,11 +6,14 @@
 #include "Matrix.h"
 #include "Layer.h"
 #include "MultiplyMatrix.h"
+#include <fstream>
+#include <sstream>
 using namespace std;
 class NeuralNetwork {
 	public:
 		//Constructors
 		NeuralNetwork(vector<int>);
+		NeuralNetwork(string);
 		
 		//Void Functions
 		void setCurrentInput(vector<double>);
@@ -38,6 +41,7 @@ class NeuralNetwork {
 		vector<Matrix *> getWeightMatricies();
 		void printTopology();
 		NeuralNetwork* breed(double);
+		void outputToFile(string);
 	private:
 		int topologySize; 
 		vector<int> topology;
@@ -50,6 +54,58 @@ class NeuralNetwork {
 		vector<double> historicalErrors;
 		double fitness;
 };
+
+NeuralNetwork::NeuralNetwork(string fn) {
+	fitness = 0;
+	ifstream ifile(fn.c_str());
+	string s;
+	getline(ifile, s);
+	ifile>>topologySize;
+	for (int i = 0;i < topologySize;i++) {
+		int n;
+		ifile>>n;
+		topology.push_back(n);
+	}
+	getline(ifile, s); //Move past the Weight line
+	getline(ifile, s);
+	
+	for (int i = 0;i < topologySize;i++) {
+		string name ="";
+		if (i == 0) {
+			name = "Input Layer";
+		} else if (i == topologySize - 1) {
+			name = "Output Layer";
+		} else {
+			name = "Hidden Layer " + to_string(i);
+		}
+		Layer *l = new Layer(topology.at(i), name);
+		layers.push_back(l);
+	}
+	getline(ifile, s);
+	while(ifile) {
+		int rows, cols;
+		stringstream ss;
+		ss.clear();
+		ss.str(s);
+		ss>>rows;
+		ss>>cols;
+		Matrix *m = new Matrix(rows, cols, false);
+		for (int r = 0;r < rows;r++) {
+			getline(ifile, s);
+			ss.clear();
+			ss.str(s);
+			for (int c = 0;c < cols;c++) {
+				double d;
+				ss>>d;
+				m->setValue(r, c, d);
+			}
+		}
+		weightMatricies.push_back(m);
+		getline(ifile, s);
+	}
+	
+	ifile.close();
+}
 
 NeuralNetwork::NeuralNetwork(vector<int> t) {
 	fitness = 0;
@@ -319,5 +375,27 @@ NeuralNetwork* NeuralNetwork::breed(double mr) {
 	}
 	nn->setWeightMatricies(childWeights);
 	return nn;
+}
+
+void NeuralNetwork::outputToFile(string fn) {
+	ofstream ofile(fn.c_str());
+	ofile<<"Topology"<<endl;
+	ofile<<topology.size()<<endl;
+	for (int i = 0;i < topology.size();i++) {
+		ofile<<topology[i]<<" ";
+	}
+	ofile<<endl;
+	
+	ofile<<"Weights"<<endl;
+	for (int i = 0;i < weightMatricies.size();i++) {
+		ofile<<weightMatricies[i]->getNumRows()<<" "<<weightMatricies[i]->getNumCols()<<endl;
+		for (int r = 0;r < weightMatricies[i]->getNumRows();r++) {
+			for (int c = 0;c < weightMatricies[i]->getNumCols();c++) {
+				ofile<<weightMatricies[i]->getValue(r, c)<<" ";
+			}
+			ofile<<endl;
+		}
+	}
+	ofile.close();
 }
 #endif

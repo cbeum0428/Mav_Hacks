@@ -80,7 +80,6 @@ string Layer::getName() {
 }
 
 vector<Neuron *> Layer::getNeurons() {
-	//cout<<"Neurons: "<<neurons.size()<<endl;
 	return neurons;
 }
 #endif
