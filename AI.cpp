@@ -114,7 +114,7 @@ string getUserInput(string prmpt) {
 int main() {
 	srand(time(NULL));
 	//loadTopScores();
-	mode = "tournament";
+	mode = "training";
 	//mode = getUserInput("What mode are we in?: ");
 	if (mode == "training") {
 		string s = getUserInput("Population: ");
@@ -172,7 +172,9 @@ int main() {
 			cout<<"Epoch: "<<n<<"/"<<numEpochs<<endl;
 			for (int i = 0;i < numTrials;i++) {
 				for (int j = 0;j < population;j++) {
-					//play game.
+					Game*g = new Game(blackpop[j], redpop[j]);// face black vs red
+					int result = g->pit_against();
+					delete g;
 				}
 				sort(redpop.begin(), redpop.end(), sortCompare);
 				sort(blackpop.begin(), blackpop.end(), sortCompare);
@@ -184,52 +186,27 @@ int main() {
 				if (blackpop[0]->getFitness() > topBlackScore) {
 					topBlackScore = blackpop[0]->getFitness();
 				}
+				
 		
-		int result = 0;
-		int topScore = 0;
-		int highestScore = 0;
-		for (int i=0; i<population;i++){//reset fitness values
-			 blackpop[i]->setFitness(0);
-			 redpop[i]->setFitness(0);
-		 }
-		for (int i = 0;i < numTrials;i++) {
-			for (int j = 0;j < population;j++) {
-				Game*g = new Game(blackpop[j], redpop[j]);// face black vs red
-				result = g->pit_against();
-				delete g;
-			}
-			if(topScore >= highestScore) highestScore = topScore;
-			cout<<"Highest Score: "<<highestScore<<endl;
-			sort(redpop.begin(), redpop.end(), sortCompare);
-			sort(blackpop.begin(), blackpop.end(), sortCompare);
-			
-			for(int i=0; i< blackpop.size(); i++) blackpop[i]->setFitness(0);
-			for(int i=0; i< redpop.size(); i++) redpop[i]->setFitness(0);
-		}
+				for(int i=0; i< blackpop.size(); i++) blackpop[i]->setFitness(0);
+				for(int i=0; i< redpop.size(); i++) redpop[i]->setFitness(0);
 		
-		//breed nns.
-		int numToKeep = population * 0.25;
-		redpop.erase(redpop.begin() + numToKeep, redpop.end());
-		blackpop.erase(blackpop.begin() + numToKeep, blackpop.end());
-		for (int i = 0;i < numToKeep;i++) {
-			redpop.push_back(redpop[i]->breed(mr));
-			redpop.push_back(redpop[i]->breed(mr));
-			redpop.push_back(redpop[i]->breed(mr));
 			
 			//breed nns.
-			int numToKeep = population * 0.25;
-			redpop.erase(redpop.begin() + numToKeep, redpop.end());
-			blackpop.erase(blackpop.begin() + numToKeep, blackpop.end());
-			for (int i = 0;i < numToKeep;i++) {
-				redpop.push_back(redpop[i]->breed(mr));
-				redpop.push_back(redpop[i]->breed(mr));
-				redpop.push_back(redpop[i]->breed(mr));
-				
-				blackpop.push_back(blackpop[i]->breed(mr));
-				blackpop.push_back(blackpop[i]->breed(mr));
-				blackpop.push_back(blackpop[i]->breed(mr));
+				int numToKeep = population * 0.25;
+				redpop.erase(redpop.begin() + numToKeep, redpop.end());
+				blackpop.erase(blackpop.begin() + numToKeep, blackpop.end());
+				for (int i = 0;i < numToKeep;i++) {
+					redpop.push_back(redpop[i]->breed(mr));
+					redpop.push_back(redpop[i]->breed(mr));
+					redpop.push_back(redpop[i]->breed(mr));
+					
+					blackpop.push_back(blackpop[i]->breed(mr));
+					blackpop.push_back(blackpop[i]->breed(mr));
+					blackpop.push_back(blackpop[i]->breed(mr));
+				}
+				mr*=0.1;
 			}
-			mr*=0.1;
 		}
 		sort(blackpop.begin(), blackpop.end(), sortCompare);
 		sort(redpop.begin(), redpop.end(), sortCompare);
@@ -250,14 +227,14 @@ int main() {
 			fn = "DeanKelleyR.txt";
 		}
 		
-		vector<int> top;
-		top.push_back(931);
-		top.push_back(767);
-		top.push_back(49);
+		//vector<int> top;
+		//top.push_back(931);
+		//top.push_back(767);
+		//top.push_back(49);
 		
-		NeuralNetwork* nn = new NeuralNetwork(top);
+		//NeuralNetwork* nn = new NeuralNetwork(top);
 		
-		//NeuralNetwork* nn = new NeuralNetwork(fn);
+		NeuralNetwork* nn = new NeuralNetwork(fn);
 		
 		bool isMyTurn = false;
 		if (isBlackPlayer) {

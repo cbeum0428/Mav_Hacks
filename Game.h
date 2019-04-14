@@ -57,7 +57,7 @@ int Game::pit_against(){
 		ANN_B->feedForward();
 		//result = updateBoard(ANN_B, 0, inputs);
 		if(updateBoard(ANN_B, 0, inputs)){
-			///*
+			/*
 			cout<<"Black Wins! "<<endl;;
 			for(int x=0; x<7; x++){
 				cout<<"x="<<x+1<<endl;
@@ -73,7 +73,7 @@ int Game::pit_against(){
 			}
 			string pause;
 			cin>>pause;
-			//* */
+			* */
 			ANN_B->setFitness(ANN_B->getFitness() + 294-i);
 			return 2;
 		}
@@ -81,7 +81,7 @@ int Game::pit_against(){
 		ANN_R->feedForward();
 		//result = updateBoard(ANN_B, 0, inputs);
 		if(updateBoard(ANN_R, 1, inputs)){
-			///*
+			/*
 			cout<<"Red Wins! "<<endl;;
 			for(int x=0; x<7; x++){
 				cout<<"x="<<x+1<<endl;
@@ -97,7 +97,7 @@ int Game::pit_against(){
 			}
 			string pause;
 			cin>>pause;
-			//* */
+			 */
 			ANN_R->setFitness(ANN_R->getFitness() + 294-i);
 			return 1;
 		};
@@ -422,55 +422,54 @@ bool Game::updateBoard(NeuralNetwork * ANN, int colorVal, vector<double> &inputs
 	for(ic = z;inputs[(x_max*126)+(ic*21)+(y_max*3)+ colorVal] == 1 && ic <= 5;ic++,vertical++);//Check down
 	for(ic = z;inputs[(x_max*126)+(ic*21)+(y_max*3)+ colorVal] == 1 && ic >= 0;ic--,vertical++);//Check up
 	if(vertical >= 4){
-		cout<<"Vertical: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Vertical: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	//check for horizontal(-)
 	for(iic = y_max;inputs[(x_max*126)+(z*21)+(iic*3)+ colorVal] == 1 && iic >= 0;iic--,horizontal++);//Check left
 	for(iic = y_max;inputs[(x_max*126)+(z*21)+(iic*3)+ colorVal] == 1 && iic <= 6;iic++,horizontal++);//Check right
 	if(horizontal >= 4){
-		cout<<"Horizontal_y: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Horizontal_y: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	//check for diagonal 1 (\)
 	for(ic = z, iic= y_max;inputs[(x_max*126)+(ic*21)+(iic*3)+ colorVal] == 1 && ic>=0 && iic >=0; diagonal1 ++, ic --, iic --);//up and left
 	for(ic = z, iic = y_max;inputs[(x_max*126)+(ic*21)+(iic*3)+ colorVal] == 1 && ic<=5 && iic <=6;diagonal1 ++, ic ++, iic ++);//down and right
 	if(diagonal1 >= 4){
-		cout<<"Diagonal_y 1: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Diagonal_y 1: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	//check for diagonal 2(/)
 	for(ic = z, iic= y_max;inputs[(x_max*126)+(ic*21)+(iic*3)+ colorVal] == 1 && ic>=0 && iic <= 6; diagonal2 ++, ic --, iic ++);//up and right
 	for(ic = z, iic= y_max;inputs[(x_max*126)+(ic*21)+(iic*3)+ colorVal] && ic<=5 && iic >=0; diagonal2 ++, ic ++, iic --);//up and left
 	if(diagonal2 >= 4){
-		cout<<"Diagonay 2: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Diagonay 2: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	vertical = -1;//(|)
 	horizontal = -1;//(-)
 	diagonal1 = -1;//(\)
 	diagonal2 = -1;//(/)
-	ic;//vertical
-	iic;//horizontal
+	//iic;//horizontal
 	//check for horiczontal(-)
 	for(iic = x_max;inputs[(iic*126)+(z*21)+(y_max*3)+ colorVal] == 1 && iic >= 0;iic--,horizontal++);//Check left
 	for(iic = x_max;inputs[(iic*126)+(z*21)+(y_max*3)+ colorVal] == 1 && iic <= 6;iic++,horizontal++);//Check ricght
 	if(horizontal >= 4){
-		cout<<"Horizontal_x: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Horizontal_x: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	//check for diagonal 1 (\)
 	for(ic = z, iic = x_max;inputs[(ic*126)+(ic*21)+(iic*3)+ colorVal] == 1 && ic>=0 && iic >=0; diagonal1 ++, ic --, iic --);//up and left
 	for(ic = z, iic = x_max;inputs[(ic*126)+(ic*21)+(iic*3)+ colorVal] && ic<=5 && iic <=6;diagonal1 ++, ic ++, iic ++);//down and ricght
 	if(diagonal1 >= 4){
-		cout<<"Diagonal_x 1: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Diagonal_x 1: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	//check for diagonal 2(/)
 	for(ic = z, iic= x_max;inputs[(ic*126)+(ic*21)+(iic*3)+ colorVal] && ic>=0 && iic <= 6; diagonal2 ++, ic --, iic ++);//up and ricght
 	for(ic = z, iic= x_max;inputs[(ic*126)+(ic*21)+(iic*3)+ colorVal] && ic<=5 && iic >=0; diagonal2 ++, ic ++, iic --);//up and left
 	if(diagonal2 >= 4){
-		cout<<"Diagonal_x 2: "<<x_max<<","<<z<<","<<y_max<<endl;
+		//cout<<"Diagonal_x 2: "<<x_max<<","<<z<<","<<y_max<<endl;
 		return true;
 	}
 	return false;
