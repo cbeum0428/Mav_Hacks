@@ -104,16 +104,7 @@ NeuralNetwork::NeuralNetwork(vector<int> t) {
 	topology = t;
 	topologySize = t.size();
 	for (int i = 0;i < (topologySize);i++) {
-		string name ="";
-		if (i == 0) {
-			name = "Input Layer";
-		} else if (i == topologySize - 1) {
-			name = "Output Layer";
-		} else {
-			name = "Hidden Layer " + to_string(i);
-		}
-		
-		Layer *l = new Layer(topology.at(i), name);
+		Layer *l = new Layer(topology.at(i), "");
 		layers.push_back(l);
 	}
 	
