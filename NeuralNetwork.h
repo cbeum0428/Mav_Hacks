@@ -37,6 +37,7 @@ class NeuralNetwork {
 		void setWeightMatricies(vector<Matrix *>);
 		vector<Matrix *> getWeightMatricies();
 		void printTopology();
+		NeuralNetwork* breed(double);
 	private:
 		int topologySize; 
 		vector<int> topology;
@@ -298,5 +299,25 @@ void NeuralNetwork::printTopology() {
 		cout<<topology[i]<<"->";
 	}
 	cout<<endl;
+}
+
+NeuralNetwork* NeuralNetwork::breed(double mr) {
+	NeuralNetwork* nn = new NeuralNetwork(topology);
+	
+	vector<Matrix *> childWeights;
+	for (int i = 0;i < weightMatricies.size();i++) {
+		Matrix* childWeight = new Matrix(weightMatricies[i]->getNumRows(), weightMatricies[i]->getNumCols(), false);
+		for (int r = 0;r < childWeight->getNumRows();r++) {
+			for (int c = 0;c < childWeight->getNumCols();c++) {
+				double oldVal = weightMatricies[i]->getValue(r, c);
+				double ran = (rand() % 3) - 1;
+				double newVal = oldVal + mr*ran*((rand() % 100)/100.0);
+				childWeight->setValue(r, c, newVal);
+			}
+		}
+		childWeights.push_back(childWeight);
+	}
+	nn->setWeightMatricies(childWeights);
+	return nn;
 }
 #endif

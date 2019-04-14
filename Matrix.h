@@ -45,7 +45,7 @@ Matrix *Matrix::transpose() {
 }
 
 void Matrix::setValue(int r, int c, double v) {
-	values.at(r).at(c) = v;
+	values[r][c] = v;
 }
 
 double Matrix::getValue(int r, int c) {

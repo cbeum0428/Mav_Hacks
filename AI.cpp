@@ -4,8 +4,69 @@
 #include <ctime>
 #include <iostream>
 #include <stdlib.h>
+#include <fstream>
 
 using namespace std;
+
+double topRedScore = 0;
+double topBlackScore = 0;
+int population;
+double mr = 3;
+
+void loadGameBoardState(int inversions[7][7], char board[7][6][7]) {
+	string gamefn = "gameinfo.txt";
+	ifstream gamefile(gamefn.c_str());
+	string s;
+	getline(gamefile, s);
+	getline(gamefile, s); //Skip Inverts and {
+	for (int x = 0;x < 7;x++) {
+		getline(gamefile, s);
+		int i = 0;
+		while (s[i] != '{') {
+			i++;
+		}
+		for (int y = 0;y < 7;y++) {
+			inversions[x][y] = (int)s[++i] - '0';
+		}
+	}
+	getline(gamefile, s);
+	getline(gamefile, s);
+	for (int x = 0;x < 7;x++) {
+		for (int y = 0;y < 7;y++) {
+			cout<<inversions[x][y]<<" ";
+		}
+		cout<<endl;
+	}
+	
+	for (int x = 0;x < 7;x++) {
+		getline(gamefile, s);
+		getline(gamefile, s);
+		for (int z = 0;z < 6;z++) {
+			getline(gamefile, s);
+			int i = 0;
+			while (s[i] != '{') {
+				i++;
+			}
+			i++;
+			for (int y = 0;y < 7;y++) {
+				board[x][z][y] = s[i++];
+			}
+		}
+		getline(gamefile, s);
+	}
+	for (int x = 0;x < 7;x++) {
+		cout<<"Game board x="<<x+1<<endl;
+		for (int z = 0;z < 6;z++) {
+			cout<<"Z: "<<z<<"| ";
+			for (int y = 0;y < 7;y++) {
+				cout<<board[x][z][y]<<", ";
+			}
+			cout<<" |";
+			cout<<endl;
+		}
+		cout<<endl;
+	}
+}
 
 string getUserInput(string prmpt) {
 	cout<<prmpt;
@@ -13,35 +74,18 @@ string getUserInput(string prmpt) {
 	return prmpt;
 }
 
+bool sortCompare(NeuralNetwork *a, NeuralNetwork *b) {
+	return a->getFitness() > b->getFitness();
+}
+
 int main() {
-	
-	vector<int> topology;
-	topology.push_back(3);
-	topology.push_back(2);
-	
-	vector<NeuralNetwork *> networks;
-	NeuralNetwork *n1 = new NeuralNetwork(topology);
-	n1->setFitness(100);
-	NeuralNetwork *n2 = new NeuralNetwork(topology);
-	n2->setFitness(0);
-	
-	networks.push_back(n1);
-	networks.push_back(n2);
-	
-	//sort(networks);
-	
-	for (int i = 0;i < networks.size();i++) {
-		cout<<i<<": "<<networks[i]->getFitness()<<endl;
-	}
-	
-	/*
 	srand(time(NULL));
 	bool isBlackPlayer = true;
 	
 	string mode = getUserInput("What mode are we in?: ");
 	if (mode == "training") {
 		string s = getUserInput("Population: ");
-		int population = atoi(s.c_str());
+		population = atoi(s.c_str());
 		s = getUserInput("Number of pit against trials?: ");
 		int numTrials = atoi(s.c_str());
 		
@@ -66,7 +110,7 @@ int main() {
 			cout<<i<<": ";
 			redpop[i]->printTopology();
 		}
-		cout<<"Created "<<redpop.size()<<"Red Neural Netorks"<<endl;
+		cout<<"Created "<<redpop.size()<<" Red Neural Netorks"<<endl;
 		
 		vector<NeuralNetwork *> blackpop;
 		for (int i = 0;i < population;i++) {
@@ -88,16 +132,33 @@ int main() {
 			cout<<i<<": ";
 			blackpop[i]->printTopology();
 		}
-		cout<<"Created "<<blackpop.size()<<"Black Neural Netorks"<<endl;
+		cout<<"Created "<<blackpop.size()<<" Black Neural Netorks"<<endl;
 		
 		for (int i = 0;i < numTrials;i++) {
 			for (int j = 0;j < population;j++) {
-				//play a game against 
+				//play game.
 			}
+			sort(redpop.begin(), redpop.end(), sortCompare);
+			sort(blackpop.begin(), blackpop.end(), sortCompare);
 		}
+		
+		//breed nns.
+		int numToKeep = population * 0.25;
+		redpop.erase(redpop.begin() + numToKeep, redpop.end());
+		blackpop.erase(blackpop.begin() + numToKeep, blackpop.end());
+		for (int i = 0;i < numToKeep;i++) {
+			redpop.push_back(redpop[i]->breed(mr));
+			redpop.push_back(redpop[i]->breed(mr));
+			redpop.push_back(redpop[i]->breed(mr));
+			
+			blackpop.push_back(blackpop[i]->breed(mr));
+			blackpop.push_back(blackpop[i]->breed(mr));
+			blackpop.push_back(blackpop[i]->breed(mr));
+		}
+		mr*=0.1;
+		
+		cout<<redpop.size()<<endl;
 	} else if (mode == "tournament") {
 		
 	}
-	*/
-
 }
