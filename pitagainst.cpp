@@ -4,7 +4,7 @@
 #include "NeuralNetwork.h"
 using namespace std;
 
-void pit_against(ANN_B, ANN_R){
+void pit_against(NeuralNetwork * ANN_B, NeuralNetwork * ANN_R){
 	// set fitness values to 0
 	vector<double> inputs;
 	for(int i=0; i<294; i++){

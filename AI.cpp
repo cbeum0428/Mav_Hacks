@@ -1,5 +1,6 @@
 #include <iostream>
 #include "NeuralNetwork.h"
+#include "Game.h"
 #include <vector>
 #include <ctime>
 #include <iostream>
@@ -134,12 +135,26 @@ int main() {
 		}
 		cout<<"Created "<<blackpop.size()<<" Black Neural Netorks"<<endl;
 		
+		int result = 0;
+		int topScore = 0;
+		int highestScore = 0;
+		for (int i=0; i<population;i++){//reset fitness values
+			 blackpop[i]->setFitness(0);
+			 redpop[i]->setFitness(0);
+		 }
 		for (int i = 0;i < numTrials;i++) {
 			for (int j = 0;j < population;j++) {
-				//play game.
+				Game*g = new Game(blackpop[j], redpop[j]);// face black vs red
+				result = g->pit_against();
+				delete g;
 			}
+			if(topScore >= highestScore) highestScore = topScore;
+			cout<<"Highest Score: "<<highestScore<<endl;
 			sort(redpop.begin(), redpop.end(), sortCompare);
 			sort(blackpop.begin(), blackpop.end(), sortCompare);
+			
+			for(int i=0; i< blackpop.size(); i++) blackpop[i]->setFitness(0);
+			for(int i=0; i< redpop.size(); i++) redpop[i]->setFitness(0);
 		}
 		
 		//breed nns.
