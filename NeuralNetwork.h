@@ -31,6 +31,12 @@ class NeuralNetwork {
 		
 		double getTotalError();
 		vector<double> getErrors();
+		void setFitness(double);
+		double getFitness();
+		
+		void setWeightMatricies(vector<Matrix *>);
+		vector<Matrix *> getWeightMatricies();
+		void printTopology();
 	private:
 		int topologySize; 
 		vector<int> topology;
@@ -41,9 +47,11 @@ class NeuralNetwork {
 		double error;
 		vector<double> errors;
 		vector<double> historicalErrors;
+		double fitness;
 };
 
 NeuralNetwork::NeuralNetwork(vector<int> t) {
+	fitness = 0;
 	topology = t;
 	topologySize = t.size();
 	for (int i = 0;i < (topologySize);i++) {
@@ -82,16 +90,7 @@ void NeuralNetwork::printToConsole() {
 		} else {
 			Matrix *m = layers.at(i)->matrixifyActivatedValues();
 			m->printToConsole();
-		}
-		/*
-		cout<<"--------------------"<<endl;
-		if (i < layers.size() - 1) {
-			cout<<"Weights: "<<endl;
-			getWeightMatrix(i)->printToConsole();
-			cout<<"--------------------"<<endl;
-		}
-		* */
-		
+		}		
 	}
 }
 
@@ -276,5 +275,28 @@ vector<double> NeuralNetwork::getOutputValues() {
 	}
 	
 	return outs;
+}
+
+void NeuralNetwork::setFitness(double f) {
+	fitness = f;
+}
+
+double NeuralNetwork::getFitness() {
+	return fitness;
+}
+
+void NeuralNetwork::setWeightMatricies(vector<Matrix *> newWeights) {
+	weightMatricies = newWeights;
+}
+
+vector<Matrix *> NeuralNetwork::getWeightMatricies() {
+	return weightMatricies;
+}
+
+void NeuralNetwork::printTopology() {
+	for (int i = 0;i < topology.size();i++) {
+		cout<<topology[i]<<"->";
+	}
+	cout<<endl;
 }
 #endif
